@@ -1,8 +1,12 @@
-import Header from "./components/Header";
+import Mandelbrot from "./components/Mandelbrot";
 import "./App.css";
 
 function App() {
-  return <Header />;
+  return (
+    <>
+      <Mandelbrot></Mandelbrot>
+    </>
+  );
 }
 
 export default App;
