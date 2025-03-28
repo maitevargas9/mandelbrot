@@ -1,13 +1,8 @@
-import MandelbrotLogo from './assets/mandelbrot.png';
-import './App.css';
+import Header from "./components/Header";
+import "./App.css";
 
 function App() {
-  return (
-    <>
-      <img src={MandelbrotLogo} className="logo" alt="Mandelbrot Logo" />
-      <h1>Mandelbrot</h1>
-    </>
-  )
+  return <Header />;
 }
 
 export default App;
