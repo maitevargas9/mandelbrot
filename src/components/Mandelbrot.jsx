@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 
 export default function Mandelbrot() {
-  const DEEP = 50;
-  const WIDTH = 500;
-  const HEIGHT = 500;
-  const SCALE = 5;
+  const [deep, setDeep] = useState(50);
+  const [width, setWidth] = useState(500);
+  const [height, setHeight] = useState(500);
+  const [scale, setScale] = useState(5);
   const [iterations, setIterations] = useState(0);
 
   function checkFast(ci, c) {
     let zi = 0;
     let z = 0;
 
-    for (let i = 0; i < DEEP; i++) {
+    for (let i = 0; i < deep; i++) {
       let ziT = 2 * (z * zi);
       let zT = z * z - zi * zi;
       z = zT + c;
@@ -21,12 +21,12 @@ export default function Mandelbrot() {
         return i;
       }
     }
-    return DEEP;
+    return deep;
   }
 
   function getColor(iter) {
-    if (iter === DEEP) return "black";
-    const t = iter / DEEP;
+    if (iter === deep) return "black";
+    const t = iter / deep;
     const r = Math.floor(9 * (1 - t) * t * t * t * 255);
     const g = Math.floor(15 * (1 - t) * (1 - t) * t * t * 255);
     const b = Math.floor(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
@@ -35,10 +35,10 @@ export default function Mandelbrot() {
 
   function drawMandelbrot(ctx) {
     let totalIterations = 0;
-    for (let x = 0; x < WIDTH; x++) {
-      for (let y = 0; y < HEIGHT; y++) {
-        let ci = (y - HEIGHT / 2) / (HEIGHT / SCALE);
-        let c = (x - WIDTH / 2) / (WIDTH / SCALE);
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        let ci = (y - height / 2) / (height / scale);
+        let c = (x - width / 2) / (width / scale);
         let iter = checkFast(ci, c);
         totalIterations += iter;
         ctx.fillStyle = getColor(iter);
@@ -48,17 +48,54 @@ export default function Mandelbrot() {
     setIterations(totalIterations);
   }
 
-  useEffect(() => {
-    const canvas = document.getElementById("mandelbrotCanvas");
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      drawMandelbrot(ctx);
-    }
-  }, []);
+  useEffect(
+    () => {
+      const canvas = document.getElementById("mandelbrotCanvas");
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        drawMandelbrot(ctx);
+      }
+    },
+    [deep, width, height, scale]
+  );
 
   return (
     <div>
-      <canvas id="mandelbrotCanvas" width={WIDTH} height={HEIGHT} />
+      <div>
+        <label>
+          Depth:{" "}
+          <input
+            type="number"
+            value={deep}
+            onChange={e => setDeep(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Width:{" "}
+          <input
+            type="number"
+            value={width}
+            onChange={e => setWidth(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Height:{" "}
+          <input
+            type="number"
+            value={height}
+            onChange={e => setHeight(Number(e.target.value))}
+          />
+        </label>
+        <label>
+          Scale:{" "}
+          <input
+            type="number"
+            value={scale}
+            onChange={e => setScale(Number(e.target.value))}
+          />
+        </label>
+      </div>
+      <canvas id="mandelbrotCanvas" width={width} height={height} />
       <p>
         Total Iterations: {iterations}
       </p>
