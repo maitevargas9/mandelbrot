@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Mandelbrot() {
   const [deep, setDeep] = useState(50);
@@ -6,6 +6,7 @@ export default function Mandelbrot() {
   const [height, setHeight] = useState(500);
   const [scale, setScale] = useState(5);
   const [iterations, setIterations] = useState(0);
+  const canvasRef = useRef(null);
 
   function checkFast(ci, c) {
     let zi = 0;
@@ -50,7 +51,7 @@ export default function Mandelbrot() {
 
   useEffect(
     () => {
-      const canvas = document.getElementById("mandelbrotCanvas");
+      const canvas = canvasRef.current;
       if (canvas) {
         const ctx = canvas.getContext("2d");
         drawMandelbrot(ctx);
@@ -59,11 +60,22 @@ export default function Mandelbrot() {
     [deep, width, height, scale]
   );
 
+  function downloadImage() {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = "mandelbrot.png";
+      link.click();
+    }
+  }
+
   return (
-    <div>
-      <div>
+    <div className="container">
+      <h1>Mandelbrot Generator</h1>
+      <div className="controls">
         <label>
-          Depth:{" "}
+          Depth
           <input
             type="number"
             value={deep}
@@ -71,7 +83,7 @@ export default function Mandelbrot() {
           />
         </label>
         <label>
-          Width:{" "}
+          Width
           <input
             type="number"
             value={width}
@@ -79,7 +91,7 @@ export default function Mandelbrot() {
           />
         </label>
         <label>
-          Height:{" "}
+          Height
           <input
             type="number"
             value={height}
@@ -87,7 +99,7 @@ export default function Mandelbrot() {
           />
         </label>
         <label>
-          Scale:{" "}
+          Scale
           <input
             type="number"
             value={scale}
@@ -95,10 +107,18 @@ export default function Mandelbrot() {
           />
         </label>
       </div>
-      <canvas id="mandelbrotCanvas" width={width} height={height} />
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        className="canvas"
+      />
       <p>
         Total Iterations: {iterations}
       </p>
+      <button onClick={downloadImage} className="download-button">
+        Download Image
+      </button>
     </div>
   );
 }
